@@ -1,16 +1,6 @@
 import { expect, test } from "vitest";
 import { TokenTypes,tokenizer } from "./tokenizer";
 
-test('paren',()=>{
-    const code = "(";
-    const tokens = [{
-        type: TokenTypes.Paren,
-        value: "(",
-    }];
-
-    expect(tokenizer(code)).toEqual(tokens);
-})
-
 test('letter',()=>{
     const code = "contract";
     const tokens = [{
@@ -28,5 +18,15 @@ test('address',()=>{
         value: "0x123321123321123321",
     }];
 
+    expect(tokenizer(code)).toEqual(tokens);
+})
+
+test('assignment',()=>{
+    const code = ':=';
+    const tokens = [{
+        type: TokenTypes.Assignment,
+        value: ":=",
+    }]
+    
     expect(tokenizer(code)).toEqual(tokens);
 })

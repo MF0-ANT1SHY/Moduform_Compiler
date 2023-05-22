@@ -2,6 +2,7 @@ export enum TokenTypes {
     Paren,
     Letter,
     Address,
+    Assignment,
 }
 
 interface Token {
@@ -13,16 +14,6 @@ export function tokenizer(code: string) {
     const tokens: Token[] = [];
     let current = 0;
     let char = code[current];
-
-    /**
-     * parse (
-     */
-    if (char === "(") {
-        tokens.push({
-            type: TokenTypes.Paren,
-            value: char,
-        });
-    }
 
     /**
      * parse letter
@@ -44,7 +35,7 @@ export function tokenizer(code: string) {
     /**
      * parse address
      */
-    let NUMBERS = /[0-9]/
+    let NUMBERS = /[0-9]/;
     if(char==='0'&&code[current+1]==="x"){
         let address = "";
         address += char;
@@ -61,5 +52,21 @@ export function tokenizer(code: string) {
             value:address,
         });
     }
+
+     /**
+     * parse assignment 
+     */
+    if(char===':'&&code[current+1]==="="){
+        let equal = "";
+        equal += char;
+        char = code[++current];
+        equal += char;
+        char = code[++current];
+
+        tokens.push({
+            type:TokenTypes.Assignment,
+            value:equal,
+        })
+    } 
     return tokens;
 }
