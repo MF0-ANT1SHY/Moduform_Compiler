@@ -1,6 +1,20 @@
 import { expect, test } from "vitest";
 import { TokenTypes, tokenizer } from "./tokenizer";
 
+test('[]', () => {
+    const code = `[ ]`;
+    const tokens = [{
+        type: TokenTypes.Leftbracket,
+        value: `[`,
+    },
+    {
+        type: TokenTypes.Rightbracket,
+        value: `]`,
+    }];
+
+    expect(tokenizer(code)).toEqual(tokens);
+})
+
 test('letter', () => {
     const code = "contract";
     const tokens = [{

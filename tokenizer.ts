@@ -1,4 +1,6 @@
 export enum TokenTypes {
+    Leftbracket,
+    Rightbracket,
     Paren,
     Letter,
     Address,
@@ -20,6 +22,30 @@ export function tokenizer(code: string) {
         */
         let WHITESPACES = /[\s\n]/;
         if (WHITESPACES.test(char)) {
+            char = code[++current];
+            continue;
+        }
+
+        /**
+         * parse Leftbracket
+         */
+        if(char === `[`){
+            tokens.push({
+                type: TokenTypes.Leftbracket,
+                value: char,
+            });
+            char = code[++current];
+            continue;
+        }
+
+        /**
+         * parse Rightbracket
+         */
+        if(char === `]`){
+            tokens.push({
+                type: TokenTypes.Rightbracket,
+                value: char,
+            });
             char = code[++current];
             continue;
         }
