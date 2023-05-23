@@ -30,3 +30,22 @@ test('assignment',()=>{
     
     expect(tokenizer(code)).toEqual(tokens);
 })
+
+test('test space',()=>{
+    const code = 'A := 0x123123123';
+    const tokens = [
+        {
+            type: TokenTypes.Letter,
+            value: "A",
+        },
+        {
+            type: TokenTypes.Assignment,
+            value: ":=",
+        },
+        {
+            type: TokenTypes.Address,
+            value: "0x123123123",
+        },
+    ]
+    expect(tokenizer(code)).toEqual(tokens);
+})
