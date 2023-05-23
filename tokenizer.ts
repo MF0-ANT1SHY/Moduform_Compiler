@@ -14,27 +14,29 @@ export function tokenizer(code: string) {
     const tokens: Token[] = [];
     let current = 0;
     let char = code[current];
-    while(current<code.length){
+    while (current < code.length) {
         /**
         * jump space and \n
         */
-        if(char===" "){
-            char=code[++current];
+        let WHITESPACES = /[\s\n]/;
+        if (WHITESPACES.test(char)) {
+            char = code[++current];
+            continue;
         }
 
         /**
         * parse letter
         */
         let LETTERS = /[a-z]/i;
-        if (LETTERS.test(char)){
+        if (LETTERS.test(char)) {
             let letter = "";
-            while( LETTERS.test(char) && current< code.length){
-                letter+=char;
-                char=code[++current];
+            while (LETTERS.test(char) && current < code.length) {
+                letter += char;
+                char = code[++current];
             }
 
             tokens.push({
-                type:TokenTypes.Letter,
+                type: TokenTypes.Letter,
                 value: letter,
             });
         }
@@ -43,26 +45,26 @@ export function tokenizer(code: string) {
         * parse address
         */
         let NUMBERS = /[0-9]/;
-        if(char==='0'&&code[current+1]==="x"){
+        if (char === '0' && code[current + 1] === "x") {
             let address = "";
             address += char;
             char = code[++current];
             address += char;
             char = code[++current];
-            while(NUMBERS.test(char) && current<code.length){
-                address+=char;
-                char=code[++current];
+            while (NUMBERS.test(char) && current < code.length) {
+                address += char;
+                char = code[++current];
             }
             tokens.push({
-                type:TokenTypes.Address,
-                value:address,
+                type: TokenTypes.Address,
+                value: address,
             });
         }
 
         /**
         * parse assignment 
         */
-        if(char===':'&&code[current+1]==="="){
+        if (char === ':' && code[current + 1] === "=") {
             let equal = "";
             equal += char;
             char = code[++current];
@@ -70,10 +72,11 @@ export function tokenizer(code: string) {
             char = code[++current];
 
             tokens.push({
-                type:TokenTypes.Assignment,
-                value:equal,
+                type: TokenTypes.Assignment,
+                value: equal,
             })
         }
-   } 
+    }
+    console.log(tokens);
     return tokens;
 }
