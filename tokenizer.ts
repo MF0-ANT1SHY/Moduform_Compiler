@@ -7,7 +7,7 @@ export enum TokenTypes {
     Assignment,
 }
 
-interface Token {
+export interface Token {
     type: TokenTypes;
     value: string;
 }

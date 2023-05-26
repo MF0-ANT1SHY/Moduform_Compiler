@@ -6,3 +6,5 @@
 
 //A,B create contract IOtrade
 ```
+
+parse assignment expression, token -> AST
