@@ -1,11 +1,45 @@
 export enum TokenTypes {
-    Leftbracket,
-    Rightbracket,
-    Paren,
-    Letter,
-    Address,
-    Assignment,
+    LEFTBRACKET,
+    RIGHTBRACKET,
+    PAREN,
+    LETTER,
+    ADDRESS,
+    ASSIGNMENT,
+    NUMBER,
+    SEMICOLON,
+    // keywords
+    CREATE,
+    CONTRACT,
+    TIME,
+    BETWEEN,
+    AND,
+    USE,
+    TEMPLATE,
+    NEED,
+    IN,
+    LIMIT,
+    ACTIVED,
+    BY,
+    WHEN,
+    THEN,
 }
+
+export let Keyword = new Map<string, TokenTypes>([
+    [`create`, TokenTypes.CREATE],
+    [`contract`, TokenTypes.CONTRACT],
+    [`time`, TokenTypes.TIME],
+    [`between`, TokenTypes.BETWEEN],
+    [`and`, TokenTypes.AND],
+    [`use`, TokenTypes.USE],
+    [`template`, TokenTypes.TEMPLATE],
+    [`need`, TokenTypes.NEED],
+    [`in`, TokenTypes.IN],
+    [`Limit`, TokenTypes.LIMIT],
+    [`actived`, TokenTypes.ACTIVED],
+    [`by`, TokenTypes.BY],
+    [`when`, TokenTypes.WHEN],
+    [`then`, TokenTypes.THEN],
+]);
 
 export interface Token {
     type: TokenTypes;
@@ -29,9 +63,9 @@ export function tokenizer(code: string) {
         /**
          * parse Leftbracket
          */
-        if(char === `[`){
+        if (char === `[`) {
             tokens.push({
-                type: TokenTypes.Leftbracket,
+                type: TokenTypes.LEFTBRACKET,
                 value: char,
             });
             char = code[++current];
@@ -41,9 +75,9 @@ export function tokenizer(code: string) {
         /**
          * parse Rightbracket
          */
-        if(char === `]`){
+        if (char === `]`) {
             tokens.push({
-                type: TokenTypes.Rightbracket,
+                type: TokenTypes.RIGHTBRACKET,
                 value: char,
             });
             char = code[++current];
@@ -62,7 +96,7 @@ export function tokenizer(code: string) {
             }
 
             tokens.push({
-                type: TokenTypes.Letter,
+                type: TokenTypes.LETTER,
                 value: letter,
             });
         }
@@ -82,7 +116,7 @@ export function tokenizer(code: string) {
                 char = code[++current];
             }
             tokens.push({
-                type: TokenTypes.Address,
+                type: TokenTypes.ADDRESS,
                 value: address,
             });
         }
@@ -98,8 +132,21 @@ export function tokenizer(code: string) {
             char = code[++current];
 
             tokens.push({
-                type: TokenTypes.Assignment,
+                type: TokenTypes.ASSIGNMENT,
                 value: equal,
+            })
+        }
+
+        /**
+         * parse semicolon
+         */
+        if (char === `;`) {
+            if (current < code.length) {
+                char = code[++current];
+            }
+            tokens.push({
+                type: TokenTypes.SEMICOLON,
+                value: `;`,
             })
         }
     }
