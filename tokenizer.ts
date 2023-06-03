@@ -7,6 +7,7 @@ export enum TokenTypes {
     ASSIGNMENT,
     NUMBER,
     SEMICOLON,
+    COLON,
     // keywords
     CREATE,
     CONTRACT,
@@ -85,6 +86,18 @@ export function tokenizer(code: string) {
         }
 
         /**
+         * parse Colon 
+         */
+        if (char === `,`) {
+            tokens.push({
+                type: TokenTypes.COLON,
+                value: char,
+            });
+            char = code[++current];
+            continue;
+        }
+
+        /**
         * parse letter
         */
         let LETTERS = /[a-z]/i;
@@ -95,10 +108,17 @@ export function tokenizer(code: string) {
                 char = code[++current];
             }
 
-            tokens.push({
-                type: TokenTypes.LETTER,
-                value: letter,
-            });
+            if (Keyword.get(letter) != undefined) {
+                tokens.push({
+                    type: Keyword.get(letter),
+                    value: letter,
+                });
+            } else {
+                tokens.push({
+                    type: TokenTypes.LETTER,
+                    value: letter,
+                });
+            }
         }
 
         /**

@@ -2,28 +2,7 @@ import { test, expect } from "vitest";
 import { TokenTypes } from "./tokenizer";
 import { NodeTypes, parser } from "./parser";
 
-test.skip(`User`, () => {
-    const tokens = [
-        {
-            type: TokenTypes.LETTER,
-            value: "A",
-        }
-    ];
-
-    const ast = {
-        type: NodeTypes.Root,
-        body: [
-            {
-                type: NodeTypes.User,
-                value: `A`,
-            },
-        ],
-    };
-
-    expect(parser(tokens)).toEqual(ast);
-})
-
-test(`AssignmentExpression`, () => {
+test(`A := 0x123123123;`, () => {
     const tokens = [
         {
             type: TokenTypes.LETTER,
@@ -36,6 +15,10 @@ test(`AssignmentExpression`, () => {
         {
             type: TokenTypes.ADDRESS,
             value: "0x123123123",
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
         },
     ];
 
@@ -61,6 +44,18 @@ test(`AssignmentExpression`, () => {
                 ],
             },
         ],
+    };
+
+    expect(parser(tokens)).toEqual(ast);
+})
+
+test.skip(`[A,B] create contract IOTrade;`, () => {
+    ;
+    const tokens = [
+
+    ];
+    const ast = {
+
     };
 
     expect(parser(tokens)).toEqual(ast);
