@@ -5,12 +5,16 @@ export enum NodeTypes {
     //expression
     AssignmentExpression,
     CreateExpression,
+    PropertyExpression,
     //token
     Contract,
+    Template,
     Address,
     Assignment,
     User,
     UserArray,
+    MINDELAY,
+    MAXDELAY,
 }
 
 //==========define interface==========================
@@ -30,6 +34,10 @@ interface CreateExpressionNode extends Node {
     body: Node[],
 }
 
+interface PropertyExpressionNode extends Node {
+    body: Node[],
+}
+
 interface UserArrayNode extends Node {
     body: string[],
 }
@@ -46,7 +54,19 @@ interface AssignmentNode extends Node {
     value: string,
 }
 
+interface TemplateNode extends Node {
+    value: string,
+}
+
 interface AddressNode extends Node {
+    value: string,
+}
+
+interface MINDELAYNode extends Node {
+    value: string,
+}
+
+interface MAXDELAYNode extends Node {
     value: string,
 }
 
@@ -107,6 +127,35 @@ function createAddressNode(address: string): AddressNode {
     };
 }
 
+// template & propertyExpression Node
+function createTemplateNode(TemplateName: string): TemplateNode {
+    return {
+        type: NodeTypes.Template,
+        value: TemplateName,
+    };
+}
+
+function createPropertyNode(): PropertyExpressionNode {
+    return {
+        type: NodeTypes.PropertyExpression,
+        body: [],
+    };
+}
+
+function createMINDELAYNode(MINDELAY: string): MINDELAYNode {
+    return {
+        type: NodeTypes.MINDELAY,
+        value: MINDELAY,
+    };
+}
+
+function createMAXDELAYNode(MAXDELAY: string): MAXDELAYNode {
+    return {
+        type: NodeTypes.MAXDELAY,
+        value: MAXDELAY,
+    };
+}
+
 //==============parser func======================
 export function parser(tokens: Token[]) {
     //读取token
@@ -116,54 +165,93 @@ export function parser(tokens: Token[]) {
     //根节点
     const rootNode = createRootNode();
 
-    switch (token.type) {
-        case TokenTypes.LETTER: {
-            const assignmentExpression = createAssignmentExpressionNode();
-            assignmentExpression.body.push(createUserNode(token.value));
-            token = tokens[++current];
-            assignmentExpression.body.push(createAssignmentNode(token.value));
-            token = tokens[++current];
-            assignmentExpression.body.push(createAddressNode(token.value));
-            token = tokens[++current];
-            rootNode.body.push(assignmentExpression);
-            break;
-        }
-        case TokenTypes.LEFTBRACKET: {
-            // create contract || template property
-            switch (tokens[current + 1].type) {
-                // CREATECONTRACT EXPRESSION
-                case TokenTypes.LETTER: {
-                    const CreateExpression = createCreateExpressionNode();
-                    const UserArray = createUserArrayNode();
-                    const ContractName = createContractNode();
+    while (current < tokens.length) {
+        switch (token.type) {
+            // assignment expression || template property expression
+            case TokenTypes.LETTER: {
+                if (tokens[current + 1].type == TokenTypes.ASSIGNMENT) {
+                    // assignment expression
+                    const assignmentExpression = createAssignmentExpressionNode();
+                    assignmentExpression.body.push(createUserNode(token.value));
                     token = tokens[++current];
-                    // add user to userArrayNode
-                    while (!(token.type == TokenTypes.RIGHTBRACKET) && current < tokens.length) {
-                        if (token.type == TokenTypes.LETTER) {
-                            UserArray.body.push(token.value);
+                    assignmentExpression.body.push(createAssignmentNode(token.value));
+                    token = tokens[++current];
+                    assignmentExpression.body.push(createAddressNode(token.value));
+                    token = tokens[++current];
+                    rootNode.body.push(assignmentExpression);
+                } else if (tokens[current + 1].type == TokenTypes.COLON) {
+                    // template property expression
+                    const propertyExpression = createPropertyNode();
+                    // add mindelay and maxdelay into expression
+                    while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                        if (token.type == TokenTypes.NUMBER) {
+                            if (tokens[current + 1].type == TokenTypes.AND) {
+                                // before token [and] => mindelay
+                                propertyExpression.body.push(createMINDELAYNode(token.value));
+                            } else {
+                                // after token [and] => maxdelay
+                                propertyExpression.body.push(createMAXDELAYNode(token.value));
+                            }
                         }
                         token = tokens[++current];
                         continue;
                     }
-                    // add contract name to contractNode
-                    while(!(token.type == TokenTypes.SEMICOLON) && current < tokens.length){
-                        if(token.type == TokenTypes.LETTER) {
-                            ContractName.value = token.value; 
-                        }
-                        token = tokens[++current];
-                        continue;
-                    }
-                    CreateExpression.body.push(UserArray);
-                    CreateExpression.body.push(ContractName);
-                    rootNode.body.push(CreateExpression);
-                    break;
+                    // add expression into root
+                    rootNode.body.push(propertyExpression);
                 }
-                case TokenTypes.TEMPLATE: {
+                break;
+            }
+            // create contract expression 
+            case TokenTypes.LEFTBRACKET: {
+                switch (tokens[current + 1].type) {
+                    // CREATECONTRACT EXPRESSION
+                    case TokenTypes.LETTER: {
+                        const CreateExpression = createCreateExpressionNode();
+                        const UserArray = createUserArrayNode();
+                        const ContractName = createContractNode();
+                        token = tokens[++current];
+                        // add user to userArrayNode
+                        while (!(token.type == TokenTypes.RIGHTBRACKET) && current < tokens.length) {
+                            if (token.type == TokenTypes.LETTER) {
+                                UserArray.body.push(token.value);
+                            }
+                            token = tokens[++current];
+                            continue;
+                        }
+                        // add contract name to contractNode
+                        while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                            if (token.type == TokenTypes.LETTER) {
+                                ContractName.value = token.value;
+                            }
+                            token = tokens[++current];
+                            continue;
+                        }
+                        CreateExpression.body.push(UserArray);
+                        CreateExpression.body.push(ContractName);
+                        rootNode.body.push(CreateExpression);
+                        break;
+                    }
+                    case TokenTypes.TEMPLATE: {
 
-                    break;
+                        break;
+                    }
+                }
+                break;
+            }
+            // template chosen
+            case TokenTypes.USE: {
+                while(!(token.type==TokenTypes.SEMICOLON)&&current<tokens.length){
+                    if(token.type==TokenTypes.LETTER){
+                        rootNode.body.push(createTemplateNode(token.value));
+                    }
+                    token = tokens[++current];
+                    continue;
                 }
             }
-            break;
+            default: {
+                token = tokens[++current];
+                continue;
+            }
         }
     }
     return rootNode;

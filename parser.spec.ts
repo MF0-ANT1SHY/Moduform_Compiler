@@ -243,4 +243,183 @@ B := 0x321123321123;
             },
         ],
     };
+
+    expect(parser(tokens)).toEqual(ast);
+})
+
+
+test.skip(`
+TimeLock: time between 600 and 900;
+`, () => {
+    const tokens = [
+        {
+            type: TokenTypes.LETTER,
+            value: `TimeLock`,
+        },
+        {
+            type: TokenTypes.COLON,
+            value: `:`,
+        },
+        {
+            type: TokenTypes.TIME,
+            value: `time`
+        },
+        {
+            type: TokenTypes.BETWEEN,
+            value: `between`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `600`,
+        },
+        {
+            type: TokenTypes.AND,
+            value: `and`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `900`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+
+    const ast = {
+        type: NodeTypes.Root,
+        body: [
+            {
+                type: NodeTypes.PropertyExpression,
+                body: [
+                    {
+                        type: NodeTypes.MINDELAY,
+                        value: `600`,
+                    },
+                    {
+                        type: NodeTypes.MAXDELAY,
+                        value: `900`,
+                    },
+                ],
+            },
+        ]
+    };
+
+    expect(parser(tokens)).toEqual(ast);
+})
+
+test(`
+use template TimeLock;
+`, () => {
+    const tokens = [
+        {
+            type: TokenTypes.USE,
+            value: `use`,
+        },
+        {
+            type: TokenTypes.TEMPLATE,
+            value: `template`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `TimeLock`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+
+    const ast = {
+        type: NodeTypes.Root,
+        body: [
+            {
+                type: NodeTypes.Template,
+                value: `TimeLock`,
+            },
+        ]
+    };
+
+    expect(parser(tokens)).toEqual(ast);
+})
+
+test(`
+use template TimeLock;
+TimeLock: time between 600 and 900;
+`, () => {
+    const tokens = [
+        {
+            type: TokenTypes.USE,
+            value: `use`,
+        },
+        {
+            type: TokenTypes.TEMPLATE,
+            value: `template`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `TimeLock`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `TimeLock`,
+        },
+        {
+            type: TokenTypes.COLON,
+            value: `:`,
+        },
+        {
+            type: TokenTypes.TIME,
+            value: `time`
+        },
+        {
+            type: TokenTypes.BETWEEN,
+            value: `between`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `600`,
+        },
+        {
+            type: TokenTypes.AND,
+            value: `and`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `900`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+
+    const ast = {
+        type: NodeTypes.Root,
+        body: [
+            {
+                type: NodeTypes.Template,
+                value: `TimeLock`,
+            },
+            {
+                type: NodeTypes.PropertyExpression,
+                body: [
+                    {
+                        type: NodeTypes.MINDELAY,
+                        value: `600`,
+                    },
+                    {
+                        type: NodeTypes.MAXDELAY,
+                        value: `900`,
+                    },
+                ],
+            },
+        ]
+    };
+
+    expect(parser(tokens)).toEqual(ast);
 })
