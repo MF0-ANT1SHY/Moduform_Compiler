@@ -23,3 +23,11 @@ mini编译器非常简单，将token划分为paren、name以及number三种；�
 Moduform能够实现的有：表达式（地址赋值）、合约创建、模板选择、模版属性、约束创建五种语句；
 
 * 表达式: start with "A,B..."; "[","use","[templateName]", "Limit";
+
+    [2023-06-03 10:41:21]
+
+    1. 赋值表达式: [LETTER, ;]
+    2. create表达式: [create, ;]
+    3. template property assignment: [[,;]
+    4. template choosing assignment: [use,;]
+    5. customize limit assginment: [limit, ;] 

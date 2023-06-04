@@ -144,9 +144,3 @@ test.skip(`A := 0x123321;`, () => {
     ]
     expect(tokenizer(code)).toEqual(tokens);
 })
-
-test.skip(`keywords has create`, () => {
-    const str = `create`;
-    const res = TokenTypes.CREATE;
-    expect(InKeyword(str)).toEqual(res);
-})

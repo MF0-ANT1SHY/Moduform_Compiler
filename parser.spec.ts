@@ -49,13 +49,65 @@ test(`A := 0x123123123;`, () => {
     expect(parser(tokens)).toEqual(ast);
 })
 
-test.skip(`[A,B] create contract IOTrade;`, () => {
-    ;
+test(`[A,B] create contract IOTrade;`, () => {
     const tokens = [
-
+        {
+            type: TokenTypes.LEFTBRACKET,
+            value: `[`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: "A",
+        },
+        {
+            type: TokenTypes.COLON,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: "B",
+        },
+        {
+            type: TokenTypes.RIGHTBRACKET,
+            value: `]`,
+        },
+        {
+            type: TokenTypes.CREATE,
+            value: "create",
+        },
+        {
+            type: TokenTypes.CONTRACT,
+            value: "contract",
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: "IOTrade",
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
     ];
     const ast = {
-
+        type: NodeTypes.Root,
+        body: [
+            {
+                type: NodeTypes.CreateExpression,
+                body: [
+                    {
+                        type: NodeTypes.UserArray,
+                        body: [
+                            `A`,
+                            `B`,
+                        ],
+                    },
+                    {
+                        type: NodeTypes.Contract,
+                        value: `IOTrade`,
+                    },
+                ],
+            },
+        ],
     };
 
     expect(parser(tokens)).toEqual(ast);
