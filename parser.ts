@@ -15,6 +15,7 @@ export enum NodeTypes {
     UserArray,
     MINDELAY,
     MAXDELAY,
+    MINneed,
 }
 
 //==========define interface==========================
@@ -67,6 +68,10 @@ interface MINDELAYNode extends Node {
 }
 
 interface MAXDELAYNode extends Node {
+    value: string,
+}
+
+interface MINneedNode extends Node {
     value: string,
 }
 
@@ -156,6 +161,13 @@ function createMAXDELAYNode(MAXDELAY: string): MAXDELAYNode {
     };
 }
 
+function createMINneedNode(MINneed: string): MINneedNode {
+    return {
+        type: NodeTypes.MINneed,
+        value: MINneed,
+    };
+}
+
 //==============parser func======================
 export function parser(tokens: Token[]) {
     //读取token
@@ -183,21 +195,40 @@ export function parser(tokens: Token[]) {
                     // template property expression
                     const propertyExpression = createPropertyNode();
                     // add mindelay and maxdelay into expression
-                    while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
-                        if (token.type == TokenTypes.NUMBER) {
-                            if (tokens[current + 1].type == TokenTypes.AND) {
-                                // before token [and] => mindelay
-                                propertyExpression.body.push(createMINDELAYNode(token.value));
-                            } else {
-                                // after token [and] => maxdelay
-                                propertyExpression.body.push(createMAXDELAYNode(token.value));
+                    // judge TimeLock or MultiTrans
+                    if (token.value == "TimeLock") {
+                        while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                            if (token.type == TokenTypes.NUMBER) {
+                                if (tokens[current + 1].type == TokenTypes.AND) {
+                                    // before token [and] => mindelay
+                                    propertyExpression.body.push(createMINDELAYNode(token.value));
+                                } else {
+                                    // after token [and] => maxdelay
+                                    propertyExpression.body.push(createMAXDELAYNode(token.value));
+                                }
                             }
+                            token = tokens[++current];
+                            continue;
                         }
-                        token = tokens[++current];
-                        continue;
+                        // add expression into root
+                        rootNode.body.push(propertyExpression);
+                    } else if (token.value == "MultiTrans") {
+                        const userArray = createUserArrayNode();
+                        while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                            token = tokens[++current];
+                            if (token.type == TokenTypes.NUMBER) {
+                                propertyExpression.body.push(createMINneedNode(token.value));
+                            } else if (token.type == TokenTypes.LETTER) {
+                                userArray.body.push(token.value);
+                            }
+                            continue;
+                        }
+                        // add expression into root
+                        propertyExpression.body.push(userArray);
+                        rootNode.body.push(propertyExpression);
+                    } else {
+                        console.log("Error: template name is not correct");
                     }
-                    // add expression into root
-                    rootNode.body.push(propertyExpression);
                 }
                 break;
             }
@@ -240,8 +271,8 @@ export function parser(tokens: Token[]) {
             }
             // template chosen
             case TokenTypes.USE: {
-                while(!(token.type==TokenTypes.SEMICOLON)&&current<tokens.length){
-                    if(token.type==TokenTypes.LETTER){
+                while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                    if (token.type == TokenTypes.LETTER) {
                         rootNode.body.push(createTemplateNode(token.value));
                     }
                     token = tokens[++current];

@@ -183,3 +183,85 @@ TimeLock: time between 600 and 900;
 
     expect(tokenizer(code)).toEqual(tokens);
 })
+
+test(`
+use template MultiTrans;
+MultiTrans: need 3 in [A,B,C];
+`, () => {
+    const code = `
+use template MultiTrans;
+MultiTrans: need 3 in [A,B,C];
+    `;
+    const tokens = [
+        {
+            type: TokenTypes.USE,
+            value: `use`,
+        },
+        {
+            type: TokenTypes.TEMPLATE,
+            value: `template`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `MultiTrans`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `MultiTrans`,
+        },
+        {
+            type: TokenTypes.COLON,
+            value: `:`,
+        },
+        {
+            type: TokenTypes.NEED,
+            value: `need`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `3`,
+        },
+        {
+            type: TokenTypes.IN,
+            value: `in`,
+        },
+        {
+            type: TokenTypes.LEFTBRACKET,
+            value: `[`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `A`,
+        },
+        {
+            type: TokenTypes.COMMA,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `B`,
+        },
+        {
+            type: TokenTypes.COMMA,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `C`,
+        },
+        {
+            type: TokenTypes.RIGHTBRACKET,
+            value: `]`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+
+    expect(tokenizer(code)).toEqual(tokens);
+})
