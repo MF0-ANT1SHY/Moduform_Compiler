@@ -6,6 +6,7 @@ export enum NodeTypes {
     AssignmentExpression,
     CreateExpression,
     PropertyExpression,
+    LimitExpression,
     //token
     Contract,
     Template,
@@ -16,6 +17,10 @@ export enum NodeTypes {
     MINDELAY,
     MAXDELAY,
     MINneed,
+    Limit,
+    Access,
+    PreSignal,
+    Signal,
 }
 
 //==========define interface==========================
@@ -39,7 +44,27 @@ interface PropertyExpressionNode extends Node {
     body: Node[],
 }
 
+interface LimitExpressionNode extends Node {
+    body: Node[],
+}
+
 interface UserArrayNode extends Node {
+    body: string[],
+}
+
+interface LimitNode extends Node {
+    value: string,
+}
+
+interface AccessNode extends Node {
+    value: string,
+}
+
+interface SignalNode extends Node {
+    value: string,
+}
+
+interface PreSignalNode extends Node {
     body: string[],
 }
 
@@ -168,6 +193,41 @@ function createMINneedNode(MINneed: string): MINneedNode {
     };
 }
 
+function createLimitExpressionNode(): LimitExpressionNode {
+    return {
+        type: NodeTypes.LimitExpression,
+        body: [],
+    };
+}
+
+function createLimitNode(Limit: string): LimitNode {
+    return {
+        type: NodeTypes.Limit,
+        value: Limit,
+    };
+}
+
+function createAccessNode(Access: string): AccessNode {
+    return {
+        type: NodeTypes.Access,
+        value: Access,
+    };
+}
+
+function createSignalNode(Signal: string): SignalNode {
+    return {
+        type: NodeTypes.Signal,
+        value: Signal,
+    };
+}
+
+function createPreSignalNode(): PreSignalNode {
+    return {
+        type: NodeTypes.PreSignal,
+        body: [],
+    };
+}
+
 //==============parser func======================
 export function parser(tokens: Token[]) {
     //读取token
@@ -263,7 +323,6 @@ export function parser(tokens: Token[]) {
                         break;
                     }
                     case TokenTypes.TEMPLATE: {
-
                         break;
                     }
                 }
@@ -274,6 +333,29 @@ export function parser(tokens: Token[]) {
                 while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
                     if (token.type == TokenTypes.LETTER) {
                         rootNode.body.push(createTemplateNode(token.value));
+                    }
+                    token = tokens[++current];
+                    continue;
+                }
+            }
+            // limit expression
+            case TokenTypes.LIMIT: {
+                const LimitExpression = createLimitExpressionNode();
+                const PreSignal = createPreSignalNode();
+                while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                    if (token.type == TokenTypes.LETTER) {
+                        // Limit Name
+                        if (tokens[current -1].type == TokenTypes.LIMIT) {
+                            LimitExpression.body.push(createLimitNode(token.value));
+                        } else if (tokens[current -1].type == TokenTypes.BY) {
+                            // Access
+                            LimitExpression.body.push(createAccessNode(token.value));
+                        } else if (tokens[current -1].type == TokenTypes.THEN) {
+                            // User
+                            LimitExpression.body.push(createSignalNode(token.value));
+                        } else {
+                            PreSignal.body.push(token.value);
+                        }
                     }
                     token = tokens[++current];
                     continue;

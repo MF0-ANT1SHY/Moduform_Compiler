@@ -319,3 +319,105 @@ MultiTrans: need 2 in [A,B,C];
     };
     expect(parser(tokens)).toEqual(ast);
 })
+
+test.skip(`
+`,()=>{
+    const tokens = [
+        {
+            type: TokenTypes.LIMIT,
+            value: `Limit`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `Upload`,
+        },
+        {
+            type: TokenTypes.ACTIVED,
+            value: `actived`,
+        },
+        {
+            type: TokenTypes.BY,
+            value: `by`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `User`,
+        },
+        {
+            type: TokenTypes.WHEN,
+            value: `when`,
+        },
+        {
+            type: TokenTypes.LEFTBRACKET,
+            value: `[`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s1`,
+        },
+        {
+            type: TokenTypes.COMMA,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s2`,
+        },
+        {
+            type: TokenTypes.COMMA,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s3`,
+        },
+        {
+            type: TokenTypes.RIGHTBRACKET,
+            value: `]`,
+        },
+        {
+            type: TokenTypes.THEN,
+            value: `then`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s4`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+    const ast = {
+        type: NodeTypes.Root,
+        body: [
+            {
+                type: NodeTypes.LimitExpression,
+                body: [
+                    {
+                        type: NodeTypes.Limit,
+                        value: `Upload`,
+                    },
+                    {
+                        type: NodeTypes.Access,
+                        value: `User`,
+                    },
+                    {
+                        type: NodeTypes.PreSignal,
+                        body: [
+                            `s1`,
+                            `s2`,
+                            `s3`,
+                        ],
+                    },
+                    {
+                        type: NodeTypes.Signal,
+                        value: `s4`,
+                    }
+                ],
+            }
+        ],
+    };
+
+    expect(parser(tokens)).toEqual(ast);
+})

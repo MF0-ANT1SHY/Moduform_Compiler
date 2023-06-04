@@ -115,6 +115,7 @@ export function tokenizer(code: string) {
         */
         let LETTERS = /[a-z]/i;
         if (LETTERS.test(char)) {
+            LETTERS = /[a-z0-9]/i;
             let letter = "";
             while (LETTERS.test(char) && current < code.length) {
                 letter += char;

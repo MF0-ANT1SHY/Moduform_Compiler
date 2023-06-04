@@ -265,3 +265,79 @@ MultiTrans: need 3 in [A,B,C];
 
     expect(tokenizer(code)).toEqual(tokens);
 })
+
+test(`
+Limit Upload actived by User when [s1,s2,s3] then s4;
+`, () => {
+    const code = `
+Limit Upload actived by User when [s1,s2,s3] then s4;
+    `;
+    const tokens = [
+        {
+            type: TokenTypes.LIMIT,
+            value: `Limit`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `Upload`,
+        },
+        {
+            type: TokenTypes.ACTIVED,
+            value: `actived`,
+        },
+        {
+            type: TokenTypes.BY,
+            value: `by`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `User`,
+        },
+        {
+            type: TokenTypes.WHEN,
+            value: `when`,
+        },
+        {
+            type: TokenTypes.LEFTBRACKET,
+            value: `[`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s1`,
+        },
+        {
+            type: TokenTypes.COMMA,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s2`,
+        },
+        {
+            type: TokenTypes.COMMA,
+            value: `,`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s3`,
+        },
+        {
+            type: TokenTypes.RIGHTBRACKET,
+            value: `]`,
+        },
+        {
+            type: TokenTypes.THEN,
+            value: `then`,
+        },
+        {
+            type: TokenTypes.LETTER,
+            value: `s4`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+
+    expect(tokenizer(code)).toEqual(tokens);
+})
