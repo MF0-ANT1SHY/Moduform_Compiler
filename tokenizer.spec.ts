@@ -91,7 +91,7 @@ test('create contract', () => {
             value: "A",
         },
         {
-            type: TokenTypes.COLON,
+            type: TokenTypes.COMMA,
             value: `,`,
         },
         {
@@ -122,25 +122,64 @@ test('create contract', () => {
     expect(tokenizer(code)).toEqual(tokens);
 })
 
-test.skip(`A := 0x123321;`, () => {
-    const code = `A := 0x123321;`;
+test(`
+use template TimeLock;
+TimeLock: time between 600 and 900;
+`, () => {
+    const code = `
+use template TimeLock;
+TimeLock: time between 600 and 900;
+    `;
     const tokens = [
         {
+            type: TokenTypes.USE,
+            value: `use`,
+        },
+        {
+            type: TokenTypes.TEMPLATE,
+            value: `template`,
+        },
+        {
             type: TokenTypes.LETTER,
-            value: `A`,
-        },
-        {
-            type: TokenTypes.ASSIGNMENT,
-            value: `:=`,
-        },
-        {
-            type: TokenTypes.ADDRESS,
-            value: `0x123321`,
+            value: `TimeLock`,
         },
         {
             type: TokenTypes.SEMICOLON,
             value: `;`,
         },
-    ]
+        {
+            type: TokenTypes.LETTER,
+            value: `TimeLock`,
+        },
+        {
+            type: TokenTypes.COLON,
+            value: `:`,
+        },
+        {
+            type: TokenTypes.TIME,
+            value: `time`
+        },
+        {
+            type: TokenTypes.BETWEEN,
+            value: `between`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `600`,
+        },
+        {
+            type: TokenTypes.AND,
+            value: `and`,
+        },
+        {
+            type: TokenTypes.NUMBER,
+            value: `900`,
+        },
+        {
+            type: TokenTypes.SEMICOLON,
+            value: `;`,
+        },
+    ];
+
     expect(tokenizer(code)).toEqual(tokens);
 })

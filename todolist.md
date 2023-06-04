@@ -3,12 +3,6 @@
 parse assignment expression, token -> AST
 
 ```
-A := 0x123123123123;
-B := 0x123123123123;
-[A, B] create contract IOTrade;
-```
-
-```
 use template [templateName];
 [template]: time between <mindelay> and <maxdelay>;
 ```

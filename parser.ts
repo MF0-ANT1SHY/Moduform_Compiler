@@ -131,12 +131,13 @@ export function parser(tokens: Token[]) {
         case TokenTypes.LEFTBRACKET: {
             // create contract || template property
             switch (tokens[current + 1].type) {
+                // CREATECONTRACT EXPRESSION
                 case TokenTypes.LETTER: {
-                    // create contract
                     const CreateExpression = createCreateExpressionNode();
                     const UserArray = createUserArrayNode();
                     const ContractName = createContractNode();
                     token = tokens[++current];
+                    // add user to userArrayNode
                     while (!(token.type == TokenTypes.RIGHTBRACKET) && current < tokens.length) {
                         if (token.type == TokenTypes.LETTER) {
                             UserArray.body.push(token.value);
@@ -144,6 +145,7 @@ export function parser(tokens: Token[]) {
                         token = tokens[++current];
                         continue;
                     }
+                    // add contract name to contractNode
                     while(!(token.type == TokenTypes.SEMICOLON) && current < tokens.length){
                         if(token.type == TokenTypes.LETTER) {
                             ContractName.value = token.value; 

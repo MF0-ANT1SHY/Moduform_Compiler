@@ -6,9 +6,9 @@ export enum TokenTypes {
     ADDRESS,
     ASSIGNMENT,
     NUMBER,
+    COMMA,
     SEMICOLON,
     COLON,
-    COMMA,
     // keywords
     CREATE,
     CONTRACT,
@@ -33,7 +33,8 @@ export let Keyword = new Map<string, TokenTypes>([
     [`between`, TokenTypes.BETWEEN],
     [`and`, TokenTypes.AND],
     [`use`, TokenTypes.USE],
-    [`template`,TokenTypes.TEMPLATE],
+    [`TimeLock`, TokenTypes.TEMPLATE],
+    [`MultiTrans`, TokenTypes.TEMPLATE],
     [`need`, TokenTypes.NEED],
     [`in`, TokenTypes.IN],
     [`Limit`, TokenTypes.LIMIT],
@@ -87,7 +88,7 @@ export function tokenizer(code: string) {
         }
 
         /**
-         * parse comma
+         * parse comma 
          */
         if (char === `,`) {
             tokens.push({
@@ -99,13 +100,13 @@ export function tokenizer(code: string) {
         }
 
         /**
-         * parse semicolon
+         * parse COLON 
          */
-        if (char === `;`) {
+        if (char === `:`) {
             tokens.push({
-                type: TokenTypes.SEMICOLON,
-                value: `;`,
-            })
+                type: TokenTypes.COLON,
+                value: char,
+            });
             char = code[++current];
             continue;
         }
@@ -123,7 +124,7 @@ export function tokenizer(code: string) {
 
             if (Keyword.get(letter) != undefined) {
                 tokens.push({
-                    type: Keyword.get(letter)!,
+                    type: Keyword.get(letter)!, // checked before, so type would never be undefined
                     value: letter,
                 });
             } else {
@@ -132,7 +133,6 @@ export function tokenizer(code: string) {
                     value: letter,
                 });
             }
-            continue;
         }
 
         /**
@@ -153,25 +153,8 @@ export function tokenizer(code: string) {
                 type: TokenTypes.ADDRESS,
                 value: address,
             });
-            continue;
         }
 
-        /**
-         * parse number
-         */
-        if(NUMBERS.test(char) && current <code.length){
-            let number = ``;
-            while(NUMBERS.test(char) && current <code.length){
-                number+=char;
-                char=code[++current];
-            }
-            tokens.push({
-                type: TokenTypes.NUMBER,
-                value: number,
-            });
-            continue;
-        }
-        
         /**
         * parse assignment 
         */
@@ -186,20 +169,19 @@ export function tokenizer(code: string) {
                 type: TokenTypes.ASSIGNMENT,
                 value: equal,
             })
-            continue;
         }
 
         /**
-         * parse colon
-         * notice: this parse cannot move above 'parse assignment', because both of them include comma
+         * parse semicolon
          */
-        if(char === `:`) {
+        if (char === `;`) {
+            if (current < code.length) {
+                char = code[++current];
+            }
             tokens.push({
-                type: TokenTypes.COLON,
-                value: `:`,
+                type: TokenTypes.SEMICOLON,
+                value: `;`,
             })
-            char = code[++current];
-            continue;
         }
     }
     console.log(tokens);
