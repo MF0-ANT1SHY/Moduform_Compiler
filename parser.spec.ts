@@ -419,6 +419,5 @@ Limit Upload actived by User when [s1,s2,s3] then s4;
             }
         ],
     };
-
     expect(parser(tokens)).toEqual(ast);
 })

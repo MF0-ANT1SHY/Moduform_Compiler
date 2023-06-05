@@ -1,26 +1,26 @@
 import { Token, TokenTypes } from "./tokenizer";
 
 export enum NodeTypes {
-    Root,
+    Root=`Root`,
     //expression
-    AssignmentExpression,
-    CreateExpression,
-    PropertyExpression,
-    LimitExpression,
+    AssignmentExpression=`AssignmentExpression`,
+    CreateExpression=`CreateExpression`,
+    PropertyExpression=`PropertyExpression`,
+    LimitExpression=`LimitExpression`,
     //token
-    Contract,
-    Template,
-    Address,
-    Assignment,
-    User,
-    UserArray,
-    MINDELAY,
-    MAXDELAY,
-    MINneed,
-    Limit,
-    Access,
-    PreSignal,
-    Signal,
+    Contract=`Contract`,
+    Template=`Template`,
+    Address=`Address`,
+    Assignment=`Assignment`,
+    User=`User`,
+    UserArray=`UserArray`,
+    MINDELAY=`MINDELAY`,
+    MAXDELAY=`MAXDELAY`,
+    MINneed=`MINneed`,
+    Limit=`Limit`,
+    Access=`Access`,
+    PreSignal=`PreSignal`,
+    Signal=`Signal`,
 }
 
 //==========define interface==========================
@@ -344,6 +344,7 @@ export function parser(tokens: Token[]) {
                 const LimitExpression = createLimitExpressionNode();
                 const PreSignal = createPreSignalNode();
                 while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                    token = tokens[++current];
                     if (token.type == TokenTypes.LETTER) {
                         // Limit Name
                         if (tokens[current -1].type == TokenTypes.LIMIT) {
@@ -352,15 +353,16 @@ export function parser(tokens: Token[]) {
                             // Access
                             LimitExpression.body.push(createAccessNode(token.value));
                         } else if (tokens[current -1].type == TokenTypes.THEN) {
-                            // User
+                            // Signal
+                            LimitExpression.body.push(PreSignal);
                             LimitExpression.body.push(createSignalNode(token.value));
                         } else {
                             PreSignal.body.push(token.value);
                         }
                     }
-                    token = tokens[++current];
                     continue;
                 }
+                rootNode.body.push(LimitExpression);
                 break;
             }
             default: {
