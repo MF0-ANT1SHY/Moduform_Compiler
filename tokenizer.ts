@@ -139,7 +139,7 @@ export function tokenizer(code: string) {
         /**
         * parse address
         */
-        let NUMBERS = /[0-9]/;
+        let NUMBERS = /[0-9a-fA-F]/;
         if (char === '0' && code[current + 1] === "x") {
             let address = "";
             address += char;

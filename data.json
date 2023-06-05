@@ -1,0 +1,92 @@
+{
+    "type": 0,
+    "body": [
+        {
+            "type": 1,
+            "body": [
+                {
+                    "type": 9,
+                    "value": "A"
+                },
+                {
+                    "type": 8,
+                    "value": ":="
+                },
+                {
+                    "type": 7,
+                    "value": "0x03C6FcED478cBbC9a4FAB34eF9f40767739D1Ff7"
+                }
+            ]
+        },
+        {
+            "type": 1,
+            "body": [
+                {
+                    "type": 9,
+                    "value": "B"
+                },
+                {
+                    "type": 8,
+                    "value": ":="
+                },
+                {
+                    "type": 7,
+                    "value": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"
+                }
+            ]
+        },
+        {
+            "type": 2,
+            "body": [
+                {
+                    "type": 10,
+                    "body": [
+                        "A",
+                        "B"
+                    ]
+                },
+                {
+                    "type": 5,
+                    "value": "TestContract"
+                }
+            ]
+        },
+        {
+            "type": 6,
+            "value": "TimeLock"
+        },
+        {
+            "type": 3,
+            "body": [
+                {
+                    "type": 11,
+                    "value": "600"
+                },
+                {
+                    "type": 12,
+                    "value": "900"
+                }
+            ]
+        },
+        {
+            "type": 6,
+            "value": "MultiTrans"
+        },
+        {
+            "type": 3,
+            "body": [
+                {
+                    "type": 13,
+                    "value": "2"
+                },
+                {
+                    "type": 10,
+                    "body": [
+                        "A",
+                        "B"
+                    ]
+                }
+            ]
+        }
+    ]
+}

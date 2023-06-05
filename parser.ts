@@ -337,6 +337,7 @@ export function parser(tokens: Token[]) {
                     token = tokens[++current];
                     continue;
                 }
+                break;
             }
             // limit expression
             case TokenTypes.LIMIT: {
@@ -360,10 +361,11 @@ export function parser(tokens: Token[]) {
                     token = tokens[++current];
                     continue;
                 }
+                break;
             }
             default: {
                 token = tokens[++current];
-                continue;
+                break;
             }
         }
     }
