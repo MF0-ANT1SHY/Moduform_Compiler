@@ -1,7 +1,0 @@
-A := 0x03C6FcED478cBbC9a4FAB34eF9f40767739D1Ff7;
-B := 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
-[A,B] create contract TestContract;
-use template TimeLock;
-TimeLock: time between 600 and 900;
-use template MultiTrans;
-MultiTrans: need 2 in [A,B];
