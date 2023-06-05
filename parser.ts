@@ -337,12 +337,14 @@ export function parser(tokens: Token[]) {
                     token = tokens[++current];
                     continue;
                 }
+                break;
             }
             // limit expression
             case TokenTypes.LIMIT: {
                 const LimitExpression = createLimitExpressionNode();
                 const PreSignal = createPreSignalNode();
                 while (!(token.type == TokenTypes.SEMICOLON) && current < tokens.length) {
+                    token = tokens[++current];
                     if (token.type == TokenTypes.LETTER) {
                         // Limit Name
                         if (tokens[current -1].type == TokenTypes.LIMIT) {
@@ -351,15 +353,17 @@ export function parser(tokens: Token[]) {
                             // Access
                             LimitExpression.body.push(createAccessNode(token.value));
                         } else if (tokens[current -1].type == TokenTypes.THEN) {
-                            // User
+                            // Signal
+                            LimitExpression.body.push(PreSignal);
                             LimitExpression.body.push(createSignalNode(token.value));
                         } else {
                             PreSignal.body.push(token.value);
                         }
                     }
-                    token = tokens[++current];
                     continue;
                 }
+                rootNode.body.push(LimitExpression);
+                break;
             }
             default: {
                 token = tokens[++current];

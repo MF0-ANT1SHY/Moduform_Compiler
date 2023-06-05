@@ -320,7 +320,8 @@ MultiTrans: need 2 in [A,B,C];
     expect(parser(tokens)).toEqual(ast);
 })
 
-test.skip(`
+test(`
+Limit Upload actived by User when [s1, s2, s3] then s4;
 `,()=>{
     const tokens = [
         {
@@ -418,6 +419,5 @@ test.skip(`
             }
         ],
     };
-
     expect(parser(tokens)).toEqual(ast);
 })
