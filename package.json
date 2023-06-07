@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "vitest": "^0.31.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.5"
   }
 }
